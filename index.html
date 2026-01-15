@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나란히교회 | Side by Side Community Church</title>
+
+    <!-- Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-blue: #005780;
+            --primary-teal: #00a4b4;
+            --bg-light: #f9fbfd;
+            --naver-green: #03C75A;
+        }
+
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+            scroll-behavior: smooth;
+            color: #333;
+        }
+
+        /* ================= HEADER ================= */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        header nav {
+            display: flex;
+            gap: 30px;
+        }
+        header a {
+            text-decoration: none;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* ================= HERO ================= */
+        .hero {
+            min-height: 100vh;
+            padding-top: 100px;
+            padding-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+
+            background:
+                url("hero_bg.png");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero img {
+            width: 280px;
+            max-width: 80%;
+            margin-bottom: 30px;
+        }
+
+        .vision-box {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(6px);
+            padding: 30px 35px;
+            border-radius: 20px;
+            max-width: 460px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .vision-title {
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .vision-main {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary-teal);
+            margin-bottom: 15px;
+        }
+
+        .vision-desc {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        /* ================= LOCATION ================= */
+        .location {
+            min-height: 100vh;
+            padding: 100px 20px 80px;
+            text-align: center;
+            background: linear-gradient(180deg, #f4f4f4, #ffffff);
+        }
+
+        .location h2 {
+            font-size: 2.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+        }
+
+        .address {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .map-box {
+            max-width: 900px;
+            margin: 0 auto 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .map-box iframe {
+            width: 100%;
+            height: 420px;
+            border: none;
+        }
+
+        .naver-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            background: var(--naver-green);
+            color: #fff;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* ================= FOOTER ================= */
+        footer { padding: 60px 20px; background: var(--primary-blue); color: white; text-align: center; }
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 가운데 정렬 */
+            text-align: center;
+        }
+
+        .social-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
+        .social-link { width: 45px; height: 45px; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1.3rem; text-decoration: none; transition: 0.3s; }
+        .social-link:hover { transform: translateY(-5px); background: var(--primary-teal); }
+
+        @media (max-width: 768px) {
+            .vision-main { font-size: 1.4rem; }
+            .map-box iframe { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <a href="#home">홈</a>
+        <a href="#location">오시는 길</a>
+    </nav>
+</header>
+
+<section id="home" class="hero">
+    <img src="logo.png" alt="나란히교회 로고">
+
+    <div class="vision-box">
+        <div class="vision-title">[2026 VISION]</div>
+        <div class="vision-main">“하나님을 기뻐하라!”</div>
+        <div class="vision-desc">
+            하나님을 기뻐하고 가장 만족할 때,<br>
+            하나님께서 가장 큰 영광을 받으십니다.
+        </div>
+    </div>
+</section>
+
+<section id="location" class="location">
+    <h2>오시는 길</h2>
+    <div class="address">서울특별시 도봉구 노해로 178</div>
+
+    <div class="map-box">
+        <iframe
+            src="https://www.google.com/maps?q=서울특별시%20도봉구%20노해로%20178&output=embed">
+        </iframe>
+    </div>
+
+    <a class="naver-btn"
+       href="https://map.naver.com/v5/search/서울특별시 도봉구 노해로 178"
+       target="_blank">
+        <span>N</span> 네이버 지도로 길찾기
+    </a>
+</section>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://www.youtube.com/@%EB%82%98%EB%9E%80%ED%9E%88%EA%B5%90%ED%9A%8C" class="social-link"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.instagram.com/sidexside_church/" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/wheebeom/" class="social-link"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://blog.naver.com/sidexside_church" class="social-link" target="_blank" aria-label="네이버 블로그"><span style="font-weight:900; font-size:1.2rem;">N</span></a>
+        </div>
+        <div class="footer-info">
+            <p>© 2026 나란히교회 | 담임목사 이휘범<br>서울시 도봉구 노해로 178 (쌍문동)</p>
+        </div>
+    </footer>
+
+</body>
+</html>
