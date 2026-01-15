@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>나란히교회 | Side by Side Community Church</title>
 
     <!-- Font -->
@@ -100,6 +101,38 @@
             color: #555;
         }
 
+        /* ============== 플레이리스트 섹션 ============== */
+        .latest-video {
+            padding: 100px 20px 80px;
+            text-align: center;
+            background: #ffffff;
+        }
+
+        .latest-video h2 {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 30px;
+        }
+
+        .video-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-wrapper iframe {
+            width: 100%;
+            height: 420px;
+        }
+
+        @media (max-width: 768px) {
+            .video-wrapper iframe {
+                height: 240px;
+            }
+        }
+
         /* ================= LOCATION ================= */
         .location {
             min-height: 100vh;
@@ -171,6 +204,7 @@
 <header>
     <nav>
         <a href="#home">홈</a>
+        <a href="#latest-video">설교 영상</a>
         <a href="#location">오시는 길</a>
     </nav>
 </header>
@@ -185,6 +219,21 @@
             하나님을 기뻐하고 가장 만족할 때,<br>
             하나님께서 가장 큰 영광을 받으십니다.
         </div>
+    </div>
+</section>
+
+<section id="latest-video" class="latest-video">
+    <h2>설교 영상</h2>
+
+    <div class="video-wrapper">
+        <iframe
+            src="https://www.youtube-nocookie.com/embed/videoseries?list=PLVi-vOhu4BzrmUPhfHbhnU8H-d8sdW96d"
+            title="나란히교회 플레이리스트"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+        </iframe>
     </div>
 </section>
 
@@ -213,7 +262,7 @@
             <a href="https://blog.naver.com/sidexside_church" class="social-link" target="_blank" aria-label="네이버 블로그"><span style="font-weight:900; font-size:1.2rem;">N</span></a>
         </div>
         <div class="footer-info">
-            <p>© 2026 나란히교회 | 담임목사 이휘범<br>서울시 도봉구 노해로 178 (쌍문동)</p>
+            <p>© 2026 대한예수교 장로회 나란히교회 | 담임목사 이휘범<br>서울시 도봉구 노해로 178 (쌍문동)</p>
         </div>
     </footer>
 
