@@ -243,6 +243,29 @@
             .vision-main { font-size: 1.4rem; }
             .map-box iframe { height: 300px; }
         }
+
+        .live-button{
+            position: fixed;
+            right: 18px;
+            top: 150px;
+            background:#FF0000;
+            color:#fff;
+            padding:12px 16px;
+            border-radius:28px;
+            box-shadow:0 6px 18px rgba(0,0,0,0.2);
+            text-decoration:none;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            font-weight:600;
+            z-index:1000;
+        }
+            .live-button:focus{outline:3px solid rgba(255,0,0,0.3);}
+            .live-icon{font-size:16px;}
+            @media (max-width:480px){
+            .live-text{display:none;} /* 모바일 경량화: 아이콘만 보여줌 */
+            .live-button{padding:12px;border-radius:50%;}
+        }
     </style>
 </head>
 <body>
@@ -335,5 +358,9 @@
         </div>
     </footer>
 
+    <a href="https://www.youtube.com/@%EB%82%98%EB%9E%80%ED%9E%88%EA%B5%90%ED%9A%8C/streams" class="live-button" target="_blank" rel="noopener">
+        <span class="live-icon">▶</span>
+        <span class="live-text">라이브 예배 참가</span>
+    </a>
 </body>
 </html>
