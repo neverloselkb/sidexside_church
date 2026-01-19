@@ -132,7 +132,7 @@ header nav a.active {
     flex-direction: column;
     align-items: center;
 
-    background: url("hero_bg.png") center / cover no-repeat;
+    background: url("hero_bg.jpg") center / cover no-repeat;
 }
 
 .hero img {
@@ -634,6 +634,10 @@ footer {
     line-height: 1.6;
     color: rgba(255,255,255,0.9);
     font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .verse span {
@@ -645,6 +649,50 @@ footer {
 
 .verse.active {
     opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .verse-slider {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+        width: 92%;
+        margin-top: 0;
+        order: 4;
+    }
+
+    .verse {
+        position: relative !important;
+        inset: auto !important;
+        opacity: 1 !important;
+        margin-bottom: 12px;
+        padding: 16px 18px;
+        font-size: 0.95rem;
+        color: #333;
+        background: linear-gradient(
+            135deg,
+            rgba(0,164,180,0.15),
+            rgba(0,87,128,0.15)
+        );
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .verse span {
+        margin-top: 4px;
+        font-size: 0.85rem;
+        color: var(--primary-teal);
+        opacity: 1;
+    }
+
+    .verse.active {
+        display: block;
+    }
+
+    .verse:not(.active) {
+        display: none;
+    }
 }
 
 /* ================= WORSHIP DAY HIGHLIGHT ================= */
