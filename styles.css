@@ -262,8 +262,9 @@ header nav a.active {
 
 .worship-info-title {
     font-weight: 800;
-    color: var(--primary-blue);
+    color: #fff;
     margin-bottom: 6px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* ================= SECTION COMMON ================= */
