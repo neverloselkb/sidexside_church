@@ -10,7 +10,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     font-family: 'Pretendard', sans-serif;
@@ -24,7 +25,7 @@ header {
     top: 0;
     width: 100%;
     height: 60px;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid #eee;
     z-index: 1000;
@@ -37,7 +38,7 @@ header {
 }
 
 header.scrolled {
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .header-logo {
@@ -72,7 +73,7 @@ header nav a {
 }
 
 header nav a:hover {
-    background: rgba(0,164,180,0.12);
+    background: rgba(0, 164, 180, 0.12);
     color: var(--primary-teal);
     transform: translateY(-2px);
 }
@@ -80,7 +81,7 @@ header nav a:hover {
 header nav a.active {
     color: #fff;
     background: linear-gradient(135deg, var(--primary-teal), var(--primary-blue));
-    box-shadow: 0 6px 18px rgba(0,164,180,0.35);
+    box-shadow: 0 6px 18px rgba(0, 164, 180, 0.35);
 }
 
 /* ================= MOBILE MENU ================= */
@@ -109,7 +110,7 @@ header nav a.active {
         gap: 12px;
         padding: 18px 0;
         display: none;
-        box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
     }
 
     header nav.open {
@@ -145,7 +146,8 @@ header nav a.active {
 @media (max-width: 768px) {
 
     .hero {
-        min-height: auto;       /* 100vh 제거 */
+        min-height: auto;
+        /* 100vh 제거 */
         padding-top: 90px;
         padding-bottom: 130px;
         display: flex;
@@ -168,7 +170,8 @@ header nav a.active {
 
     .verse-slider {
         margin-bottom: 22px;
-        position: static !important;   /* absolute 완전 차단 */
+        position: static !important;
+        /* absolute 완전 차단 */
         transform: none !important;
         top: auto !important;
         left: auto !important;
@@ -220,12 +223,12 @@ header nav a.active {
 
 /* ================= HERO CONTENT ================= */
 .vision-box {
-    background: rgba(255,255,255,0.9);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(6px);
     padding: 30px 36px;
     border-radius: 20px;
     max-width: 460px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .vision-title {
@@ -250,12 +253,10 @@ header nav a.active {
     margin-top: 24px;
     padding: 20px 26px;
     border-radius: 22px;
-    background: linear-gradient(
-        135deg,
-        rgba(0,164,180,0.35),
-        rgba(0,87,128,0.35)
-    );
-    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    background: linear-gradient(135deg,
+            rgba(0, 164, 180, 0.35),
+            rgba(0, 87, 128, 0.35));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(8px);
 }
 
@@ -285,7 +286,7 @@ header nav a.active {
     margin: 0 auto;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
@@ -307,7 +308,7 @@ header nav a.active {
     margin: 0 auto 40px;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .map-box iframe {
@@ -327,8 +328,8 @@ header nav a.active {
     font-size: 1.05rem;
     text-decoration: none;
     color: #fff;
-    background: linear-gradient(135deg,#03C75A,#00a14b);
-    box-shadow: 0 10px 26px rgba(3,199,90,0.35);
+    background: linear-gradient(135deg, #03C75A, #00a14b);
+    box-shadow: 0 10px 26px rgba(3, 199, 90, 0.35);
 }
 
 /* ================= NOTICE ================= */
@@ -343,8 +344,8 @@ header nav a.active {
 .notice-item {
     padding: 20px 24px;
     border-radius: 18px;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
 }
 
 /* ================= FOOTER ================= */
@@ -366,7 +367,7 @@ footer {
     width: 45px;
     height: 45px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
     display: flex;
     align-items: center;
@@ -394,7 +395,7 @@ footer {
     font-weight: 700;
     font-size: 0.95rem;
 
-    box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -406,7 +407,7 @@ footer {
 /* hover */
 .live-button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 26px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3);
 }
 
 /* ===== 자동 강조 (예배 시간 근접) ===== */
@@ -415,9 +416,17 @@ footer {
 }
 
 @keyframes live-pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(255,0,0,0.6); }
-    70%  { box-shadow: 0 0 0 18px rgba(255,0,0,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,0,0,0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.6);
+    }
+
+    70% {
+        box-shadow: 0 0 0 18px rgba(255, 0, 0, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
 }
 
 /* ================= MOBILE FAB ================= */
@@ -440,13 +449,21 @@ footer {
 /* ================= LIVE AUTO HIGHLIGHT ================= */
 .live-button.highlight {
     animation: live-pulse 1.4s infinite;
-    box-shadow: 0 0 0 rgba(255,0,0,0.7);
+    box-shadow: 0 0 0 rgba(255, 0, 0, 0.7);
 }
 
 @keyframes live-pulse {
-    0% { box-shadow: 0 0 0 0 rgba(255,0,0,0.6); }
-    70% { box-shadow: 0 0 0 14px rgba(255,0,0,0); }
-    100% { box-shadow: 0 0 0 0 rgba(255,0,0,0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.6);
+    }
+
+    70% {
+        box-shadow: 0 0 0 14px rgba(255, 0, 0, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
 }
 
 /* ================= LIVE TALKING ================= */
@@ -455,11 +472,25 @@ footer {
 }
 
 @keyframes live-talk {
-    0%   { transform: translateX(0); }
-    25%  { transform: translateX(-3px); }
-    50%  { transform: translateX(3px); }
-    75%  { transform: translateX(-2px); }
-    100% { transform: translateX(0); }
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-3px);
+    }
+
+    50% {
+        transform: translateX(3px);
+    }
+
+    75% {
+        transform: translateX(-2px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
 
 /* LIVE 진행 중 상태 */
@@ -487,15 +518,17 @@ footer {
 @keyframes live-alert {
     0% {
         transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(255,0,0,0.6);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.6);
     }
+
     50% {
         transform: scale(1.08);
-        box-shadow: 0 0 0 22px rgba(255,0,0,0);
+        box-shadow: 0 0 0 22px rgba(255, 0, 0, 0);
     }
+
     100% {
         transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(255,0,0,0);
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
     }
 }
 
@@ -527,7 +560,7 @@ footer {
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: rgba(255,255,255,0.92);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
@@ -554,7 +587,7 @@ footer {
 .loading-bar {
     width: 140px;
     height: 4px;
-    background: rgba(0,87,128,0.15);
+    background: rgba(0, 87, 128, 0.15);
     border-radius: 4px;
     overflow: hidden;
     position: relative;
@@ -566,17 +599,20 @@ footer {
     left: -40%;
     width: 40%;
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        var(--primary-teal),
-        var(--primary-blue)
-    );
+    background: linear-gradient(90deg,
+            var(--primary-teal),
+            var(--primary-blue));
     animation: loading-move 1.4s infinite ease-in-out;
 }
 
 @keyframes loading-move {
-    0% { left: -40%; }
-    100% { left: 100%; }
+    0% {
+        left: -40%;
+    }
+
+    100% {
+        left: 100%;
+    }
 }
 
 /* ================= LOADING SVG LOGO ================= */
@@ -633,7 +669,7 @@ footer {
     transition: opacity 1s ease;
     font-size: 1.1rem;
     line-height: 1.6;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
     display: flex;
     flex-direction: column;
@@ -671,13 +707,11 @@ footer {
         padding: 16px 18px;
         font-size: 0.95rem;
         color: #333;
-        background: linear-gradient(
-            135deg,
-            rgba(0,164,180,0.35),
-            rgba(0,87,128,0.35)
-        );
+        background: linear-gradient(135deg,
+                rgba(0, 164, 180, 0.35),
+                rgba(0, 87, 128, 0.35));
         border-radius: 16px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         backdrop-filter: blur(8px);
     }
 
@@ -710,3 +744,43 @@ footer {
     color: #fff;
 }
 
+/* ================= NOTICE BADGE ================= */
+.notice-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #ff4d4d;
+    color: #fff;
+    font-size: 0.85rem;
+    margin-right: 8px;
+    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+    vertical-align: middle;
+}
+
+/* 중요 공지(pinned) 강조 */
+.notice-item.pinned {
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    background: #fffafa;
+}
+
+.notice-date {
+    color: #888;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-right: 12px;
+}
+
+.notice-item strong {
+    font-size: 1.1rem;
+    color: #222;
+    margin-right: 4px;
+}
+
+.notice-item p {
+    margin-top: 8px;
+    color: #555;
+    line-height: 1.5;
+}
