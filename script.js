@@ -62,7 +62,8 @@ document.addEventListener("DOMContentLoaded", () => {
         /* 현재 섹션 */
         let current = "";
         sections.forEach(sec => {
-            if (window.scrollY >= sec.offsetTop - 140) {
+            // 숨겨진 섹션(offsetParent === null)은 무시
+            if (sec.offsetParent !== null && window.scrollY >= sec.offsetTop - 140) {
                 current = sec.id;
             }
         });
@@ -317,4 +318,34 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("공지사항 로딩 실패:", error);
             noticeBox.innerHTML = "<p class='error-notice'>공지사항을 불러오는 데 실패했습니다.</p>";
         });
+});
+
+/* ===== VIDEO VISIBILITY BASED ON DAY ===== */
+document.addEventListener("DOMContentLoaded", () => {
+    const wedVideo = document.getElementById("latest-wednesday-video");
+    const sunVideo = document.getElementById("latest-sunday-video");
+
+    // 내비게이션 링크 선택
+    const wedLink = document.querySelector('a[href="#latest-wednesday-video"]');
+    const sunLink = document.querySelector('a[href="#latest-sunday-video"]');
+
+    if (!wedVideo || !sunVideo) return;
+
+    const today = new Date().getDay(); // 0: Sun, 1: Mon, ... 6: Sat
+
+    // 수요일(3) ~ 토요일(6) -> 수요 예배 영상 보이기
+    if (today >= 3 && today <= 6) {
+        wedVideo.style.display = "block";
+        if (wedLink) wedLink.style.display = ""; // 원래 스타일로 복구
+
+        sunVideo.style.display = "none";
+        if (sunLink) sunLink.style.display = "none";
+    } else {
+        // 일요일(0) ~ 화요일(2) -> 주일 예배 영상 보이기
+        wedVideo.style.display = "none";
+        if (wedLink) wedLink.style.display = "none";
+
+        sunVideo.style.display = "block";
+        if (sunLink) sunLink.style.display = ""; // 원래 스타일로 복구
+    }
 });
