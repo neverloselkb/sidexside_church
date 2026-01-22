@@ -1,22 +1,35 @@
+/**
+ * 나란히교회 메인 스크립트
+ * 리팩토링: 기능별 함수 분리 및 단일 진입점 구현
+ */
+
 document.addEventListener("DOMContentLoaded", () => {
+    initLoadingScreen();
+    initNavigation();
+    updateVideoVisibility();
+    initVerseSlider();
+    initWorshipHighlights();
+    fetchNotices();
+});
+
+/* =========================================================================
+   1. 로딩 화면 및 초기 등장 (Reveal)
+   ========================================================================= */
+function initLoadingScreen() {
     const loading = document.getElementById("loading");
     if (!loading) return;
 
     const isMobile = window.innerWidth <= 768;
-
     const MIN_LOADING_TIME = isMobile ? 400 : 900;
     const FADE_OUT_TIME = 600;
 
     const todayKey = new Date().toISOString().slice(0, 10);
     const lastShown = localStorage.getItem("loadingLastShown");
-
     const shouldShowLoading = lastShown !== todayKey;
 
+    // Hero 섹션 콘텐츠 순차 등장
     function revealHeroContents() {
-        const heroReveals = document.querySelectorAll(
-            "#home .reveal"
-        );
-
+        const heroReveals = document.querySelectorAll("#home .reveal");
         heroReveals.forEach((el, i) => {
             setTimeout(() => {
                 el.classList.add("active");
@@ -26,25 +39,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (shouldShowLoading) {
         localStorage.setItem("loadingLastShown", todayKey);
-
         setTimeout(() => {
             loading.classList.add("hide");
-
             setTimeout(() => {
                 loading.remove();
-                revealHeroContents(); // ⭐ 로딩 종료 후 hero 등장
+                revealHeroContents(); // 로딩 종료 후 등장
             }, FADE_OUT_TIME);
-
         }, MIN_LOADING_TIME);
-
     } else {
         loading.remove();
         revealHeroContents();
     }
-});
+}
 
-document.addEventListener("DOMContentLoaded", () => {
-
+/* =========================================================================
+   2. 네비게이션, 헤더 스크롤, 스크롤 Reveal
+   ========================================================================= */
+function initNavigation() {
     const header = document.querySelector("header");
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll("header nav a");
@@ -53,29 +64,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const reveals = document.querySelectorAll(".reveal");
 
     function onScroll() {
-
-        /* 헤더 */
+        // 헤더 스타일 변경
         if (header) {
             header.classList.toggle("scrolled", window.scrollY > 30);
         }
 
-        /* 현재 섹션 */
+        // 현재 섹션 하이라이트
         let current = "";
         sections.forEach(sec => {
-            // 숨겨진 섹션(offsetParent === null)은 무시
             if (sec.offsetParent !== null && window.scrollY >= sec.offsetTop - 140) {
                 current = sec.id;
             }
         });
 
         navLinks.forEach(link => {
-            link.classList.toggle(
-                "active",
-                link.getAttribute("href") === `#${current}`
-            );
+            link.classList.toggle("active", link.getAttribute("href") === `#${current}`);
         });
 
-        /* 🔥 reveal 핵심 */
+        // 스크롤 Reveal 효과
         reveals.forEach(el => {
             if (el.getBoundingClientRect().top < window.innerHeight - 100) {
                 el.classList.add("active");
@@ -83,19 +89,46 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* 스크롤 이벤트 */
     window.addEventListener("scroll", onScroll);
+    onScroll(); // 초기 로드 시 실행
 
-    /* ⭐⭐⭐ 페이지 로드 시 한 번 강제 실행 */
-    onScroll();
-
-    /* 햄버거 */
+    // 햄버거 메뉴 토글
     if (toggle && nav) {
         toggle.addEventListener("click", () => nav.classList.toggle("open"));
     }
-});
+}
 
-/* ===== SEASONAL VERSES ===== */
+/* =========================================================================
+   3. 요일별 영상 노출 Logic
+   ========================================================================= */
+function updateVideoVisibility() {
+    const wedVideo = document.getElementById("latest-wednesday-video");
+    const sunVideo = document.getElementById("latest-sunday-video");
+    const wedLink = document.querySelector('a[href="#latest-wednesday-video"]');
+    const sunLink = document.querySelector('a[href="#latest-sunday-video"]');
+
+    if (!wedVideo || !sunVideo) return;
+
+    const today = new Date().getDay(); // 0: Sun, 1: Mon, ... 6: Sat
+
+    // 수요일(3) ~ 토요일(6) -> 수요 예배 영상 우선
+    if (today >= 3 && today <= 6) {
+        wedVideo.style.display = "block";
+        if (wedLink) wedLink.style.display = "";
+        sunVideo.style.display = "none";
+        if (sunLink) sunLink.style.display = "none";
+    } else {
+        // 일요일(0) ~ 화요일(2) -> 주일 예배 영상 우선
+        wedVideo.style.display = "none";
+        if (wedLink) wedLink.style.display = "none";
+        sunVideo.style.display = "block";
+        if (sunLink) sunLink.style.display = "";
+    }
+}
+
+/* =========================================================================
+   4. 말씀 슬라이더 (절기별 말씀)
+   ========================================================================= */
 function getSeasonVerses() {
     const now = new Date();
     const month = now.getMonth() + 1;
@@ -134,7 +167,7 @@ function getSeasonVerses() {
         ];
     }
 
-    // 기본
+    // 기본 말씀
     return [
         "“하나님을 기뻐하라.” — 시편 37:4",
         "“서로 사랑하라.” — 요한복음 13:34",
@@ -158,112 +191,82 @@ function getSeasonVerses() {
     ];
 }
 
-/* verse DOM 교체 */
-(() => {
+function initVerseSlider() {
     const slider = document.querySelector(".verse-slider");
     if (!slider) return;
 
-    const verses = getSeasonVerses();
+    // 1. DOM 생성
+    const versesData = getSeasonVerses();
     slider.innerHTML = "";
-
-    verses.forEach((text, i) => {
+    versesData.forEach((text, i) => {
         const div = document.createElement("div");
         div.className = "verse" + (i === 0 ? " active" : "");
         div.innerHTML = text.replace("—", "<span>—");
         slider.appendChild(div);
     });
-})();
 
-/* ===== HERO VERSE SLIDE ===== */
-(() => {
-    const verses = document.querySelectorAll(".verse");
-    if (verses.length === 0) return;
+    // 2. 슬라이드 로직
+    const verseElements = slider.querySelectorAll(".verse");
+    if (verseElements.length === 0) return;
 
     let index = 0;
-
     setInterval(() => {
-        verses[index].classList.remove("active");
-        index = (index + 1) % verses.length;
-        verses[index].classList.add("active");
+        verseElements[index].classList.remove("active");
+        index = (index + 1) % verseElements.length;
+        verseElements[index].classList.add("active");
     }, 5000);
-})();
+}
 
-/* ===== WORSHIP DAY AUTO HIGHLIGHT ===== */
-(() => {
-    const today = new Date().getDay(); // 0=일, 3=수
-    const days = document.querySelectorAll(".worship-day");
-
-    days.forEach(day => {
-        if (
-            (today === 0 && day.dataset.day === "sun") ||
-            (today === 3 && day.dataset.day === "wed")
-        ) {
-            day.classList.add("active");
-        }
-    });
-})();
-
-/* ===== LIVE BUTTON AUTO HIGHLIGHT ===== */
-(() => {
-    const liveBtn = document.querySelector(".live-button");
-    if (!liveBtn) return;
-
+/* =========================================================================
+   5. 예배 요일 하이라이트 & 라이브 버튼
+   ========================================================================= */
+function initWorshipHighlights() {
     const now = new Date();
-    const day = now.getDay();
+    const day = now.getDay(); // 0=일, 3=수
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-    let targetMinutes = null;
+    // 1. 예배 안내 텍스트 하이라이트
+    const days = document.querySelectorAll(".worship-day");
+    days.forEach(d => {
+        if (
+            (day === 0 && d.dataset.day === "sun") ||
+            (day === 3 && d.dataset.day === "wed")
+        ) {
+            d.classList.add("active");
+        }
+    });
 
-    // 수요일
-    if (day === 3) targetMinutes = 20 * 60;
-    // 주일
-    if (day === 0) targetMinutes = 11 * 60;
-
-    if (!targetMinutes) return;
-
-    if (currentMinutes >= targetMinutes - 30 && currentMinutes <= targetMinutes + 10) {
-        liveBtn.classList.add("highlight");
-    }
-})();
-
-(() => {
+    // 2. 라이브 버튼 상태 관리
     const liveBtn = document.querySelector(".live-button");
     const liveText = document.querySelector(".live-text");
     if (!liveBtn || !liveText) return;
 
-    const now = new Date();
-    const day = now.getDay(); // 0=일, 3=수
-    const current = now.getHours() * 60 + now.getMinutes();
-
     let serviceTime = null;
-
-    // 예배 시간 설정
     if (day === 0) serviceTime = 11 * 60; // 주일 11:00
     if (day === 3) serviceTime = 20 * 60; // 수요 20:00
 
     if (!serviceTime) return;
 
-    /* 예배 10분 전 → 말 걸기 */
-    if (current >= serviceTime - 10 && current < serviceTime) {
+    // 예배 10분 전 ~ 예배 시작 전: 말 걸기
+    if (currentMinutes >= serviceTime - 10 && currentMinutes < serviceTime) {
         liveBtn.classList.add("highlight", "talk");
     }
-
-    /* 예배 시작 ~ 90분 */
-    if (current >= serviceTime && current <= serviceTime + 90) {
+    // 예배 시작 ~ 90분: On Air
+    else if (currentMinutes >= serviceTime && currentMinutes <= serviceTime + 90) {
         liveBtn.classList.add("highlight", "onair");
         liveBtn.classList.remove("talk");
         liveText.textContent = "지금 LIVE 중";
     }
-
-    /* 예배 종료 후 */
-    if (current > serviceTime + 90) {
+    // 예배 시작 90분 후: 숨김
+    else if (currentMinutes > serviceTime + 90) {
         liveBtn.classList.add("hide");
     }
+}
 
-})();
-
-/* ===== NOTICE FETCHING ===== */
-document.addEventListener("DOMContentLoaded", () => {
+/* =========================================================================
+   6. 공지사항 Fetching
+   ========================================================================= */
+function fetchNotices() {
     const noticeBox = document.querySelector(".notice-box");
     if (!noticeBox) return;
 
@@ -273,8 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then(data => {
-            // 기존 내용(주석 등) 비우기
-            noticeBox.innerHTML = "";
+            noticeBox.innerHTML = ""; // 초기화
 
             if (data.length === 0) {
                 noticeBox.innerHTML = "<p class='no-notice'>등록된 공지사항이 없습니다.</p>";
@@ -288,10 +290,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // 중요 공지 스타일
                 if (notice.important) {
                     item.classList.add("pinned", "important");
-                    // 배지 추가
                     const badge = document.createElement("span");
                     badge.className = "notice-badge";
-                    badge.innerHTML = '<i class="fas fa-thumbtack"></i>'; // 📌 핀 아이콘
+                    badge.innerHTML = '<i class="fas fa-thumbtack"></i>';
                     item.appendChild(badge);
                 }
 
@@ -318,34 +319,4 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("공지사항 로딩 실패:", error);
             noticeBox.innerHTML = "<p class='error-notice'>공지사항을 불러오는 데 실패했습니다.</p>";
         });
-});
-
-/* ===== VIDEO VISIBILITY BASED ON DAY ===== */
-document.addEventListener("DOMContentLoaded", () => {
-    const wedVideo = document.getElementById("latest-wednesday-video");
-    const sunVideo = document.getElementById("latest-sunday-video");
-
-    // 내비게이션 링크 선택
-    const wedLink = document.querySelector('a[href="#latest-wednesday-video"]');
-    const sunLink = document.querySelector('a[href="#latest-sunday-video"]');
-
-    if (!wedVideo || !sunVideo) return;
-
-    const today = new Date().getDay(); // 0: Sun, 1: Mon, ... 6: Sat
-
-    // 수요일(3) ~ 토요일(6) -> 수요 예배 영상 보이기
-    if (today >= 3 && today <= 6) {
-        wedVideo.style.display = "block";
-        if (wedLink) wedLink.style.display = ""; // 원래 스타일로 복구
-
-        sunVideo.style.display = "none";
-        if (sunLink) sunLink.style.display = "none";
-    } else {
-        // 일요일(0) ~ 화요일(2) -> 주일 예배 영상 보이기
-        wedVideo.style.display = "none";
-        if (wedLink) wedLink.style.display = "none";
-
-        sunVideo.style.display = "block";
-        if (sunLink) sunLink.style.display = ""; // 원래 스타일로 복구
-    }
-});
+}
