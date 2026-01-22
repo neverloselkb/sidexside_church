@@ -77,6 +77,13 @@ function initNavigation() {
             }
         });
 
+        // 바닥에 닿았으면 맨 마지막 섹션 강제 선택
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 10) {
+            if (sections.length > 0) {
+                current = sections[sections.length - 1].id;
+            }
+        }
+
         navLinks.forEach(link => {
             link.classList.toggle("active", link.getAttribute("href") === `#${current}`);
         });
