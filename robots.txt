@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://neverloselkb.github.io/sidexside_church/sitemap.xml
