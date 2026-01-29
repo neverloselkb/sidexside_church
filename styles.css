@@ -343,19 +343,78 @@ header nav a.active {
 }
 
 /* ================= NOTICE ================= */
-.notice-box {
-    max-width: 720px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+/* ================= INTRO ================= */
+.intro-section {
+    padding: 100px 20px 80px;
+    text-align: center;
+    background: var(--bg-light);
 }
 
-.notice-item {
-    padding: 20px 24px;
-    border-radius: 18px;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+.intro-section h2 {
+    font-size: 2rem;
+    color: var(--primary-blue);
+    margin-bottom: 40px;
+}
+
+.intro-box {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 30px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 50, 100, 0.08); /* Subtle blue tinted shadow */
+    border: 1px solid rgba(0, 87, 128, 0.05);
+}
+
+.intro-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 24px;
+    word-break: keep-all;
+}
+
+.intro-text.highlight {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin: 32px 0;
+    font-family: 'Pretendard', serif; /* Optional: if you want a slightly different feel */
+}
+
+.intro-sign {
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end; /* Right align the signature */
+    align-items: center;
+    gap: 10px;
+    padding-right: 20px;
+}
+
+.sign-role {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.sign-name {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #333;
+    font-family: 'Pretendard', sans-serif;
+}
+
+@media (max-width: 768px) {
+    .intro-box {
+        padding: 30px 20px;
+    }
+    
+    .intro-text {
+        font-size: 1rem;
+    }
+
+    .intro-text.highlight {
+        font-size: 1.15rem;
+    }
 }
 
 /* ================= FOOTER ================= */
@@ -754,43 +813,3 @@ footer {
     color: #fff;
 }
 
-/* ================= NOTICE BADGE ================= */
-.notice-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: #ff4d4d;
-    color: #fff;
-    font-size: 0.85rem;
-    margin-right: 8px;
-    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
-    vertical-align: middle;
-}
-
-/* 중요 공지(pinned) 강조 */
-.notice-item.pinned {
-    border: 1px solid rgba(255, 77, 77, 0.3);
-    background: #fffafa;
-}
-
-.notice-date {
-    color: #888;
-    font-size: 0.95rem;
-    font-weight: 500;
-    margin-right: 12px;
-}
-
-.notice-item strong {
-    font-size: 1.1rem;
-    color: #222;
-    margin-right: 4px;
-}
-
-.notice-item p {
-    margin-top: 8px;
-    color: #555;
-    line-height: 1.5;
-}

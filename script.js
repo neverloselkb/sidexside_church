@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateVideoVisibility();
     initVerseSlider();
     initWorshipHighlights();
-    fetchNotices();
+    // fetchNotices(); // Removed
 });
 
 /* =========================================================================
@@ -237,7 +237,8 @@ function initWorshipHighlights() {
     days.forEach(d => {
         if (
             (day === 0 && d.dataset.day === "sun") ||
-            (day === 3 && d.dataset.day === "wed")
+            (day === 3 && d.dataset.day === "wed") ||
+            (day === 5 && d.dataset.day === "fri")
         ) {
             d.classList.add("active");
         }
@@ -251,6 +252,7 @@ function initWorshipHighlights() {
     let serviceTime = null;
     if (day === 0) serviceTime = 11 * 60; // 주일 11:00
     if (day === 3) serviceTime = 20 * 60; // 수요 20:00
+    if (day === 5) serviceTime = 20 * 60; // 금요 20:00
 
     if (!serviceTime) return;
 
@@ -270,60 +272,4 @@ function initWorshipHighlights() {
     }
 }
 
-/* =========================================================================
-   6. 공지사항 Fetching
-   ========================================================================= */
-function fetchNotices() {
-    const noticeBox = document.querySelector(".notice-box");
-    if (!noticeBox) return;
 
-    fetch("notices.json")
-        .then(response => {
-            if (!response.ok) throw new Error("네트워크 응답 실패");
-            return response.json();
-        })
-        .then(data => {
-            noticeBox.innerHTML = ""; // 초기화
-
-            if (data.length === 0) {
-                noticeBox.innerHTML = "<p class='no-notice'>등록된 공지사항이 없습니다.</p>";
-                return;
-            }
-
-            data.forEach(notice => {
-                const item = document.createElement("div");
-                item.className = "notice-item";
-
-                // 중요 공지 스타일
-                if (notice.important) {
-                    item.classList.add("pinned", "important");
-                    const badge = document.createElement("span");
-                    badge.className = "notice-badge";
-                    badge.innerHTML = '<i class="fas fa-thumbtack"></i>';
-                    item.appendChild(badge);
-                }
-
-                // 날짜
-                const dateSpan = document.createElement("span");
-                dateSpan.className = "notice-date";
-                dateSpan.textContent = notice.date;
-                item.appendChild(dateSpan);
-
-                // 제목
-                const titleStrong = document.createElement("strong");
-                titleStrong.textContent = notice.title;
-                item.appendChild(titleStrong);
-
-                // 내용
-                const contentP = document.createElement("p");
-                contentP.textContent = notice.content;
-                item.appendChild(contentP);
-
-                noticeBox.appendChild(item);
-            });
-        })
-        .catch(error => {
-            console.error("공지사항 로딩 실패:", error);
-            noticeBox.innerHTML = "<p class='error-notice'>공지사항을 불러오는 데 실패했습니다.</p>";
-        });
-}
