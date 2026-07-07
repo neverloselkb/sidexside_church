@@ -813,3 +813,60 @@ footer {
     color: #fff;
 }
 
+/* ================= HERO SLOGAN ================= */
+.slogan-box {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    z-index: 2;
+}
+
+.slogan-tag {
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--primary-blue);
+    font-weight: 800;
+    font-size: 1.15rem;
+    padding: 10px 22px;
+    border-radius: 30px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 87, 128, 0.08);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    letter-spacing: -0.02em;
+}
+
+.slogan-tag:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, var(--primary-teal), var(--primary-blue));
+    color: #fff;
+    box-shadow: 0 10px 24px rgba(0, 164, 180, 0.35);
+    border-color: transparent;
+}
+
+/* 모바일 반응형 대응 */
+@media (max-width: 768px) {
+    .slogan-box {
+        margin-bottom: 24px;
+        gap: 12px;
+        width: 92%;
+        position: relative;
+        top: auto;
+        bottom: auto;
+        transform: none;
+        margin-left: auto;
+        margin-right: auto;
+        order: 1.5; /* 로고와 비전박스 사이에 배치 */
+        flex-direction: column; /* 세로 정렬 */
+        align-items: center; /* 가운데 정렬 */
+    }
+    
+    .slogan-tag {
+        font-size: 1rem;
+        padding: 8px 20px;
+        width: fit-content; /* 글자 크기에 맞게 칩 크기 자동 조절 */
+    }
+}
+
+
