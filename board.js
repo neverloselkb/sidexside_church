@@ -10,6 +10,9 @@ let currentPosts = [];
 let activeCategory = "전체";
 let searchQuery = "";
 let currentUser = null;
+let currentPage = 1;
+const POSTS_PER_PAGE = 6;
+let preparedImageFile = null;
 
 // DOM 로드 완료 후 초기화
 document.addEventListener("DOMContentLoaded", () => {
@@ -53,7 +56,7 @@ function initSupabase() {
 }
 
 /* =========================================================================
-   2. 게시글 불러오기 및 렌더링
+   2. 게시글 불러오기 및 렌더링 (페이징 지원)
    ========================================================================= */
 async function fetchPosts() {
     if (!sbClient) return;
@@ -107,7 +110,15 @@ function renderPosts() {
         return;
     }
 
-    listContainer.innerHTML = filtered.map(post => {
+    // 페이징 계산
+    const totalPages = Math.ceil(filtered.length / POSTS_PER_PAGE) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+    const paginated = filtered.slice(startIndex, startIndex + POSTS_PER_PAGE);
+
+    listContainer.innerHTML = paginated.map(post => {
         const formattedDate = formatDate(post.created_at);
         const hasImage = !!post.image_url;
         const categoryClass = getCategoryClass(post.category);
@@ -142,6 +153,84 @@ function renderPosts() {
             </article>
         `;
     }).join("");
+
+    renderPagination(totalPages, filtered.length);
+}
+
+function renderPagination(totalPages, totalCount) {
+    const pagContainer = document.getElementById("board-pagination");
+    if (!pagContainer) return;
+
+    if (totalPages <= 1) {
+        pagContainer.innerHTML = "";
+        return;
+    }
+
+    let html = '';
+
+    // 이전 페이지 버튼
+    html += `
+        <button class="page-btn page-arrow" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} aria-label="이전 페이지">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    `;
+
+    // 페이지 번호 생성 (최대 5개 표시 및 생략 ... 처리)
+    let startPage = 1;
+    let endPage = totalPages;
+
+    if (totalPages > 5) {
+        if (currentPage <= 3) {
+            startPage = 1;
+            endPage = 5;
+        } else if (currentPage + 2 >= totalPages) {
+            startPage = totalPages - 4;
+            endPage = totalPages;
+        } else {
+            startPage = currentPage - 2;
+            endPage = currentPage + 2;
+        }
+    }
+
+    if (startPage > 1) {
+        html += `<button class="page-btn" onclick="changePage(1)">1</button>`;
+        if (startPage > 2) {
+            html += `<span class="page-ellipsis">...</span>`;
+        }
+    }
+
+    for (let p = startPage; p <= endPage; p++) {
+        html += `
+            <button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="changePage(${p})">
+                ${p}
+            </button>
+        `;
+    }
+
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            html += `<span class="page-ellipsis">...</span>`;
+        }
+        html += `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+    }
+
+    // 다음 페이지 버튼
+    html += `
+        <button class="page-btn page-arrow" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} aria-label="다음 페이지">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+
+    pagContainer.innerHTML = html;
+}
+
+function changePage(page) {
+    currentPage = page;
+    renderPosts();
+    const boardEl = document.getElementById("news");
+    if (boardEl) {
+        boardEl.scrollIntoView({ behavior: "smooth" });
+    }
 }
 
 function showBoardEmptyState(message) {
@@ -153,6 +242,10 @@ function showBoardEmptyState(message) {
                 <p>${message}</p>
             </div>
         `;
+    }
+    const pagContainer = document.getElementById("board-pagination");
+    if (pagContainer) {
+        pagContainer.innerHTML = "";
     }
 }
 
@@ -315,11 +408,11 @@ function closeWriteModal() {
     resetImagePreview();
 }
 
-// 스마트폰 고화질 사진을 웹용으로 브라우저에서 자동 압축 (1GB 용량 극대화)
-function compressImage(file, maxWidth = 1280, quality = 0.82) {
+// 스마트폰 고화질 사진을 웹용으로 브라우저에서 자동 압축 (용량 80% 이상 최적화 및 퀄리티 0.8)
+function compressImage(file, maxWidth = 1200, quality = 0.8) {
     return new Promise((resolve, reject) => {
         // 이미지가 아닌 경우 그대로 반환
-        if (!file.type.startsWith("image/")) {
+        if (!file || !file.type.startsWith("image/")) {
             resolve(file);
             return;
         }
@@ -340,9 +433,13 @@ function compressImage(file, maxWidth = 1280, quality = 0.82) {
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext("2d");
+
+                // 투명 배경 PNG도 자연스럽게 흰 배경으로 채움
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillRect(0, 0, width, height);
                 ctx.drawImage(img, 0, 0, width, height);
 
-                // JPEG 형식으로 압축
+                // JPEG 80% 화질 압축 (스마트폰 원본 3~10MB -> 200~400KB로 약 80~90% 절감)
                 canvas.toBlob((blob) => {
                     if (!blob) {
                         resolve(file);
@@ -380,18 +477,18 @@ async function handleWriteSubmit(e) {
     }
 
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 및 이미지 최적화 중...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 저장 및 소식 등록 중...';
 
     try {
         let imageUrl = null;
 
-        // 이미지 파일이 있는 경우 업로드
-        if (fileInput.files && fileInput.files[0]) {
-            const originalFile = fileInput.files[0];
-            // 브라우저에서 10MB -> 200KB 수준으로 고화질 압축
-            const fileToUpload = await compressImage(originalFile);
+        // 이미지 파일이 있는 경우 업로드 (미리 압축된 파일 우선 사용)
+        let fileToUpload = preparedImageFile;
+        if (!fileToUpload && fileInput.files && fileInput.files[0]) {
+            fileToUpload = await compressImage(fileInput.files[0], 1200, 0.8);
+        }
 
-            // 한글/특수문자 방지를 위한 파일명 생성
+        if (fileToUpload) {
             const fileExt = "jpg";
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
             const filePath = `posts/${fileName}`;
@@ -428,6 +525,7 @@ async function handleWriteSubmit(e) {
 
         alert("소식이 성공적으로 등록되었습니다!");
         closeWriteModal();
+        currentPage = 1;
         fetchPosts(); // 목록 새로고침
     } catch (err) {
         console.error("글 작성 오류:", err);
@@ -494,6 +592,7 @@ function initBoardEvents() {
             tabBtns.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
             activeCategory = btn.getAttribute("data-category");
+            currentPage = 1; // 카테고리 변경 시 1페이지로 리셋
             renderPosts();
         });
     });
@@ -503,6 +602,7 @@ function initBoardEvents() {
     if (searchInput) {
         searchInput.addEventListener("input", (e) => {
             searchQuery = e.target.value;
+            currentPage = 1; // 검색어 입력 시 1페이지로 리셋
             renderPosts();
         });
     }
@@ -517,37 +617,83 @@ function initBoardEvents() {
         });
     });
 
-    // 이미지 첨부 시 미리보기
+    // 이미지 첨부 시 압축 및 미리보기
     const imageInput = document.getElementById("write-image");
     if (imageInput) {
         imageInput.addEventListener("change", handleImagePreview);
     }
 }
 
-function handleImagePreview(e) {
+async function handleImagePreview(e) {
     const file = e.target.files[0];
     const previewContainer = document.getElementById("image-preview-container");
     const previewImg = document.getElementById("image-preview");
+    const infoEl = document.getElementById("image-compression-info");
 
     if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            previewImg.src = event.target.result;
-            previewContainer.style.display = "block";
-        };
-        reader.readAsDataURL(file);
+        if (infoEl) {
+            infoEl.style.display = "block";
+            infoEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> 이미지 압축 및 용량 최적화 중...`;
+        }
+
+        try {
+            // 브라우저 캔버스를 통해 1200px 리사이징 & 80% 화질로 압축 (용량 80% 이상 절감)
+            const compressed = await compressImage(file, 1200, 0.8);
+            preparedImageFile = compressed;
+
+            const origKb = Math.round(file.size / 1024);
+            const compKb = Math.round(compressed.size / 1024);
+            const savedPercent = Math.max(0, Math.round(((file.size - compressed.size) / file.size) * 100));
+
+            const origText = origKb >= 1024 ? `${(origKb / 1024).toFixed(1)}MB` : `${origKb}KB`;
+            const compText = compKb >= 1024 ? `${(compKb / 1024).toFixed(1)}MB` : `${compKb}KB`;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                previewImg.src = event.target.result;
+                previewContainer.style.display = "block";
+            };
+            reader.readAsDataURL(compressed);
+
+            if (infoEl) {
+                infoEl.innerHTML = `
+                    <i class="fas fa-check-circle"></i> <strong>이미지 용량 약 ${savedPercent}% 절감 완료:</strong> 
+                    ${origText} ➔ <strong>${compText}</strong>
+                `;
+            }
+        } catch (err) {
+            console.error("이미지 압축 오류:", err);
+            preparedImageFile = file;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                previewImg.src = event.target.result;
+                previewContainer.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+
+            if (infoEl) {
+                infoEl.innerHTML = `<i class="fas fa-info-circle"></i> 원본 사진으로 등록됩니다.`;
+            }
+        }
     } else {
         resetImagePreview();
     }
 }
 
 function resetImagePreview() {
+    preparedImageFile = null;
     const previewContainer = document.getElementById("image-preview-container");
     const previewImg = document.getElementById("image-preview");
     const imageInput = document.getElementById("write-image");
+    const infoEl = document.getElementById("image-compression-info");
+
     if (previewContainer) previewContainer.style.display = "none";
     if (previewImg) previewImg.src = "";
     if (imageInput) imageInput.value = "";
+    if (infoEl) {
+        infoEl.style.display = "none";
+        infoEl.innerHTML = "";
+    }
 }
 
 function formatDate(isoString) {

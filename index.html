@@ -175,6 +175,9 @@
             <div id="board-list" class="board-grid">
                 <!-- board.js에서 동적으로 렌더링됩니다 -->
             </div>
+
+            <!-- 페이징 컨트롤 -->
+            <div id="board-pagination" class="board-pagination"></div>
         </div>
     </section>
 
@@ -293,6 +296,7 @@
                             <img id="image-preview" src="" alt="미리보기">
                             <button type="button" class="btn-remove-preview" onclick="resetImagePreview()">사진 제거</button>
                         </div>
+                        <div id="image-compression-info" class="image-compress-info" style="display: none;"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
