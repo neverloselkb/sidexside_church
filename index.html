@@ -59,6 +59,7 @@
         <nav>
             <a href="#home"><i class="fas fa-house"></i> 홈</a>
             <a href="#intro"><i class="fas fa-info-circle"></i> 교회 소개</a>
+            <a href="#news"><i class="fas fa-bullhorn"></i> 교회 소식</a>
             <a href="#latest-wednesday-video"><i class="fas fa-video"></i> 최근 예배</a>
             <a href="#latest-sunday-video"><i class="fas fa-church"></i> 최근 예배</a>
             <a href="#location"><i class="fas fa-map-marker-alt"></i> 오시는 길</a>
@@ -130,6 +131,53 @@
         </div>
     </section>
 
+    <!-- 교회 소식 / 게시판 섹션 (Supabase 연동) -->
+    <section id="news" class="board-section reveal">
+        <div class="board-container">
+            <div class="board-header">
+                <h2>교회 소식</h2>
+                <p>나란히교회의 주보, 공지 및 따뜻한 소식을 전해드립니다.</p>
+            </div>
+
+            <!-- 상단 컨트롤 (카테고리 탭, 검색, 관리자 메뉴) -->
+            <div class="board-controls">
+                <div class="board-tabs">
+                    <button class="board-tab active" data-category="전체">전체</button>
+                    <button class="board-tab" data-category="공지">공지사항</button>
+                    <button class="board-tab" data-category="주보">주보</button>
+                    <button class="board-tab" data-category="행사">행사소식</button>
+                </div>
+
+                <div class="board-actions">
+                    <div class="board-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="board-search" placeholder="소식 검색...">
+                    </div>
+
+                    <div class="admin-actions-bar">
+                        <span id="admin-status-badge" class="admin-badge" style="display: none;">
+                            <i class="fas fa-user-shield"></i> 관리자 모드
+                        </span>
+                        <button id="btn-admin-login" class="btn-admin-tool btn-admin-login" onclick="openLoginModal()">
+                            <i class="fas fa-lock"></i> 관리자
+                        </button>
+                        <button id="btn-admin-write" class="btn-admin-tool btn-admin-write" style="display: none;" onclick="openWriteModal()">
+                            <i class="fas fa-pen"></i> 글쓰기
+                        </button>
+                        <button id="btn-admin-logout" class="btn-admin-tool btn-admin-logout" style="display: none;" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt"></i> 로그아웃
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 게시글 카드 그리드 목록 -->
+            <div id="board-list" class="board-grid">
+                <!-- board.js에서 동적으로 렌더링됩니다 -->
+            </div>
+        </div>
+    </section>
+
     <section id="latest-wednesday-video" class="latest-video">
         <h2>최근 예배</h2>
 
@@ -188,6 +236,105 @@
         <span class="live-icon">▶</span>
         <span class="live-text">라이브 예배 참가</span>
     </a>
+    <!-- ================= MODALS ================= -->
+
+    <!-- 1. 게시글 상세 보기 모달 -->
+    <div id="detail-modal" class="modal-overlay">
+        <div class="modal-box detail-modal-box">
+            <div class="modal-header">
+                <div id="modal-detail-meta" class="detail-meta-wrap"></div>
+                <button class="modal-close-btn" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3 id="modal-detail-title" class="detail-title"></h3>
+                <div id="modal-detail-image-wrap" class="detail-image-box" style="display: none;"></div>
+                <div id="modal-detail-content" class="detail-content"></div>
+            </div>
+            <div class="modal-footer">
+                <div id="modal-detail-admin-actions"></div>
+                <button class="btn-secondary" onclick="closeDetailModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 관리자 글쓰기 모달 -->
+    <div id="write-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>새 소식 등록</h3>
+                <button class="modal-close-btn" onclick="closeWriteModal()">&times;</button>
+            </div>
+            <form id="form-write" onsubmit="handleWriteSubmit(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="write-category">구분</label>
+                        <select id="write-category" class="form-select">
+                            <option value="공지">공지사항</option>
+                            <option value="주보">주보</option>
+                            <option value="행사">행사소식</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="write-title">제목</label>
+                        <input type="text" id="write-title" class="form-input" placeholder="제목을 입력해주세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="write-content">내용</label>
+                        <textarea id="write-content" class="form-textarea" placeholder="내용을 입력해주세요" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>사진 첨부 (선택)</label>
+                        <label class="file-upload-box" for="write-image">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <div>클릭하여 사진 선택 (자동 고화질 압축 지원)</div>
+                        </label>
+                        <input type="file" id="write-image" accept="image/*" style="display: none;">
+                        <div id="image-preview-container" class="image-preview-wrapper" style="display: none;">
+                            <img id="image-preview" src="" alt="미리보기">
+                            <button type="button" class="btn-remove-preview" onclick="resetImagePreview()">사진 제거</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeWriteModal()">취소</button>
+                    <button type="submit" id="btn-submit-write" class="btn-primary">
+                        <i class="fas fa-check"></i> 등록하기
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 3. 관리자 로그인 모달 -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 420px;">
+            <div class="modal-header">
+                <h3>관리자 로그인</h3>
+                <button class="modal-close-btn" onclick="closeLoginModal()">&times;</button>
+            </div>
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="login-email">이메일</label>
+                        <input type="email" id="login-email" class="form-input" placeholder="admin@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">비밀번호</label>
+                        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeLoginModal()">취소</button>
+                    <button type="submit" id="btn-submit-login" class="btn-primary">로그인</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supabase SDK 및 스크립트 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="board.js"></script>
     <script src="script.js"></script>
 </body>
 
